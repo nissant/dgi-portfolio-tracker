@@ -50,7 +50,9 @@ def create_portfolio_from_transactions(transactions_df: pd.DataFrame):
     position_info_df = fetch_positions_current_info(portfolio_df[["Symbol"]], yahoo_field_map)
     position_df = pd.merge(portfolio_df, position_info_df, on="Symbol", how='inner')
     position_df["Cache Flow"] = position_df["Qty"]*position_df["Forward Dividend"]
+    position_df["Cache Flow %"] = position_df["Cache Flow"] / position_df["Cache Flow"].sum()
     position_df["Market Value"] = position_df["Qty"] * position_df["Price"]
+    position_df["Allocation %"] = position_df["Market Value"] / position_df["Market Value"].sum()
     return position_df
 
 
