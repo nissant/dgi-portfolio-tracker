@@ -55,9 +55,9 @@ def convert_str_to_float_df_columns(df: pd.DataFrame, numeric_columns: list):
             df[column] = df[column].map(lambda value: float(re.sub("[^0-9.]", "", value)))
 
 
-def fetch_positions_current_info(position_df: pd.DataFrame, field_map: dict):
+def fetch_positions_current_info(position_df: list, field_map: dict):
     data = dict()
-    for symbol in position_df["Symbol"].to_list():
+    for symbol in position_df:
         ticker = yf.Ticker(symbol)
         ticker_data = ticker.info
         for field in field_map.keys():
@@ -68,8 +68,7 @@ def fetch_positions_current_info(position_df: pd.DataFrame, field_map: dict):
                 ticker_data[field_map[field]] = datetime.datetime.fromtimestamp(ticker_data[field_map[field]])
             data[field].append(ticker_data[field_map[field]])
 
-    # data = yf.download(tickers=" ".join(position_df["Symbol"].to_list()), period="1d", group_by="ticker")
-    data["Symbol"] = position_df["Symbol"].to_list()
+    data["Symbol"] = position_df
     return pd.DataFrame.from_dict(data)
 
 
@@ -83,7 +82,7 @@ def create_portfolio_from_transactions(transactions_df: pd.DataFrame):
     portfolio_df = symbol_group[PF.summation].sum()    # TODO - Subtract Sell transactions
     portfolio_df[PF.tranches] = trans_cleaned[PF.symbol].value_counts()
     portfolio_df.reset_index(inplace=True)
-    position_info_df = fetch_positions_current_info(portfolio_df[[PF.symbol]], yahoo_field_map)
+    position_info_df = fetch_positions_current_info(portfolio_df[PF.symbol].to_list(), yahoo_field_map)
     position_df = pd.merge(portfolio_df, position_info_df, on=PF.symbol, how='inner')
     # Cache Flow
     position_cache_flow = position_df[PF.quantity]*position_df[PF.forward_div_rate]
