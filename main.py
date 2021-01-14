@@ -4,7 +4,6 @@ import pandas as pd
 import re
 import yfinance as yf
 import datetime
-# import numpy as np
 
 
 class TSF:
@@ -112,22 +111,34 @@ if __name__ == "__main__":
         exit(1)
 
     # Get output directory path
+    portfolio_output_xlsx = ""
     in_path = sys.argv[2]
     if os.path.isdir(in_path):
-        portfolio_xlsx = os.path.join(in_path, "dgi-portfolio.xlsx")
+        portfolio_output_xlsx = os.path.join(in_path, "dgi-portfolio.xlsx")
     elif os.path.isfile(in_path):
         in_path = os.path.dirname(in_path)
-        portfolio_xlsx = os.path.join(in_path, "dgi-portfolio.xlsx")
+        portfolio_output_xlsx = os.path.join(in_path, "dgi-portfolio.xlsx")
     else:
         print("Error: wrong output directory path")
         exit(1)
 
     # Import the Sample worksheet with acquisition dates and initial cost basis:
+    print("Reading Transaction ...")
     transactions = pd.read_excel(transactions_xlsx, sheet_name='Sheet1')
     convert_str_to_float_df_columns(transactions, TSF.summation)
+    print("Done!")
 
+    print("Creating Portfolio ...")
     portfolio = create_portfolio_from_transactions(transactions)
-    portfolio.to_excel(portfolio_xlsx, sheet_name="portfolio")
 
-    summary_df = portfolio[PF.summary]
-    print(f"\nSummary:\n{summary_df.sum(numeric_only=True)}")
+    # Create Portfolio xlsx
+    with pd.ExcelWriter(portfolio_output_xlsx) as writer:
+        portfolio.to_excel(writer, sheet_name="portfolio")
+        print("Done!")
+
+        # Create Summary Sheet
+        summary_df = portfolio[PF.summary].sum()
+        summary_df.to_excel(writer, sheet_name="summary")
+
+        # TODO - Create simulation sheet
+

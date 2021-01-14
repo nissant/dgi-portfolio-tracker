@@ -1,6 +1,7 @@
 # dgi-portfolio-tracker
 
 A dividend growth portfolio tracker program that allows you to trace the movements of your individual holdings and get key metrics.
+A portfolio simulation sheet can be generated as well based on last years metrics.   
 
 
 ## Getting Started
@@ -21,7 +22,7 @@ c:\temp\dgi-portfolio-tracker> pip install -r requirements.txt
 
 ## Usage
 ### Generating Portfolio From Transactions
-Create portfolio transactions table in xlsx format (Can be Exported from stock brocker or bank website).
+Create portfolio transactions table in xlsx format (Can be exported from stock brocker or bank website).
 - Transaction table labels must include:
 
 | Date     | Symbol  | Qty  | Side  | Price  | Principal  | Comm  |
@@ -29,7 +30,7 @@ Create portfolio transactions table in xlsx format (Can be Exported from stock b
 |   8/7/19 | CAT     | 30   |Buy    | 134.5  | 4035       | 5     |
 ### Run Script
 ```
-c:\temp\dgi-portfolio-tracker> python main.py 
+c:\temp\dgi-portfolio-tracker> python main.py <path_to_transaction_table.xlsx> <out_directory_path>
 ```
 
 ## Contributing
