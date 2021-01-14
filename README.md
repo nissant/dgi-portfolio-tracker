@@ -31,6 +31,13 @@ Create portfolio transactions table in xlsx format (Can be exported from stock b
 ### Run Script
 ```
 c:\temp\dgi-portfolio-tracker> python main.py <path_to_transaction_table.xlsx> <out_directory_path>
+
+Reading Transaction ...
+Done!
+Creating Portfolio ...
+Done!
+
+Process finished with exit code 0
 ```
 
 ## Contributing
