@@ -6,8 +6,8 @@ import math
 from datetime import datetime
 
 # Define the ticker and time range
-ticker = 'jnj'
-time_range = 5
+ticker = 'KO'
+time_range = 6
 ticker = ticker.upper()
 
 # Get Yahoo Finance data

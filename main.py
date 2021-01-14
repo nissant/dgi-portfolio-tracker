@@ -1,4 +1,5 @@
 import sys
+import os
 import pandas as pd
 import re
 import yfinance as yf
@@ -98,15 +99,28 @@ def create_portfolio_from_transactions(transactions_df: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        transactions_xlsx = sys.argv[1]
-    else:
-        transactions_xlsx = r"C:\Users\tnisa\Google Drive\Investing\dgi-transactions.xlsx"
 
-    if len(sys.argv) > 2:
-        portfolio_xlsx = sys.argv[2]
+    if len(sys.argv) < 2:
+        print("Error: wrong script usage!")
+        print("python main.py <path_to_transaction_table.xlsx> <out_directory_path>")
+        exit(1)
+
+    # Get transaction table file path
+    transactions_xlsx = sys.argv[1]
+    if not (os.path.isfile(transactions_xlsx) and os.path.splitext(transactions_xlsx)[1] == ".xlsx"):
+        print("Error: wrong transaction table file format or file doesn't exist")
+        exit(1)
+
+    # Get output directory path
+    in_path = sys.argv[2]
+    if os.path.isdir(in_path):
+        portfolio_xlsx = os.path.join(in_path, "dgi-portfolio.xlsx")
+    elif os.path.isfile(in_path):
+        in_path = os.path.dirname(in_path)
+        portfolio_xlsx = os.path.join(in_path, "dgi-portfolio.xlsx")
     else:
-        portfolio_xlsx = r"C:\Users\tnisa\Google Drive\Investing\dgi-portfolio.xlsx"
+        print("Error: wrong output directory path")
+        exit(1)
 
     # Import the Sample worksheet with acquisition dates and initial cost basis:
     transactions = pd.read_excel(transactions_xlsx, sheet_name='Sheet1')
